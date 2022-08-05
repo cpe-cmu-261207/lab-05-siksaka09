@@ -31,26 +31,36 @@ function addTodo(title, completed) {
   //your code here+
   //append todo to HTML...
   //define buttons event...
-  if (title === "") {
-    alert("Todo cannot be empty");
-  } else {
-    todoCtn.appendChild(span);
-    todoCtn.appendChild(doneBtn);
-    todoCtn.appendChild(deleteBtn);
-    todoCtn.appendChild(div);
-  }
+  todoCtn.appendChild(div);
+  div.appendChild(span);
+  div.appendChild(doneBtn);
+  div.appendChild(deleteBtn);
 
-  doneBtn.onclick = () => {
-    if (span.style.textDecoration === "line-through")
-      span.style.textDecoration = "";
-    else span.style.textDecoration = "line-through";
+  div.onmouseover = () => {
+    deleteBtn.style.display = "";
+    doneBtn.style.display = "";
+  };
+
+  div.onmouseout = () => {
+    deleteBtn.style.display = "none";
+    doneBtn.style.display = "none";
   };
 
   deleteBtn.onclick = () => {
     todoCtn.removeChild(div);
-    todoCtn.removeChild(span);
-    todoCtn.removeChild(doneBtn);
-    todoCtn.removeChild(deleteBtn);
+    saveTodo();
+  };
+
+  doneBtn.onclick = () => {
+    if (completed) {
+      completed = false;
+    } else {
+      completed = true;
+    }
+
+    span.style.textDecoration = completed ? "line-through" : "";
+
+    saveTodo();
   };
 }
 
