@@ -1,10 +1,16 @@
 const inputAdd = document.getElementById("input-add-todo");
 const todoCtn = document.getElementById("todo-container");
+let check = true;
 
 inputAdd.onkeyup = (event) => {
   if (event.key !== "Enter") return;
-  //your code here
-  addTodo(inputAdd.value, "");
+  if (inputAdd.value != "") {
+    addTodo(inputAdd.value, false);
+    inputAdd.value = "";
+  } else {
+    alert("Please input to do.");
+  }
+  saveTodo();
 };
 
 function addTodo(title, completed) {
@@ -21,34 +27,38 @@ function addTodo(title, completed) {
   //create done button
   const doneBtn = document.createElement("button");
   doneBtn.innerText = "Done";
-  doneBtn.className = "btn btn-success me-2";
+  doneBtn.className = "btn btn-success me-2 ";
 
   //create delete button
   const deleteBtn = document.createElement("button");
   deleteBtn.innerText = "Delete";
   deleteBtn.className = "btn btn-danger";
-
-  //your code here+
-  //append todo to HTML...
-  //define buttons event...
-  todoCtn.appendChild(div);
-  div.appendChild(span);
-  div.appendChild(doneBtn);
-  div.appendChild(deleteBtn);
-
-  div.onmouseover = () => {
-    deleteBtn.style.display = "";
-    doneBtn.style.display = "";
-  };
-
-  div.onmouseout = () => {
-    deleteBtn.style.display = "none";
-    doneBtn.style.display = "none";
-  };
+  if (check == true) {
+    todoCtn.prepend(div);
+    div.prepend(deleteBtn);
+    div.prepend(doneBtn);
+    div.prepend(span);
+  } else {
+    todoCtn.appendChild(div);
+    div.appendChild(span);
+    div.appendChild(doneBtn);
+    div.appendChild(deleteBtn);
+  }
 
   deleteBtn.onclick = () => {
     todoCtn.removeChild(div);
     saveTodo();
+  };
+  deleteBtn.style.display = "none";
+
+  doneBtn.style.display = "none";
+  div.onmouseout = () => {
+    doneBtn.style.display = "none";
+    deleteBtn.style.display = "none";
+  };
+  div.onmouseover = () => {
+    doneBtn.style.display = "";
+    deleteBtn.style.display = "";
   };
 
   doneBtn.onclick = () => {
@@ -59,15 +69,14 @@ function addTodo(title, completed) {
     }
 
     span.style.textDecoration = completed ? "line-through" : "";
-
     saveTodo();
   };
 }
-
 function saveTodo() {
   const data = [];
   for (const todoDiv of todoCtn.children) {
     const todoObj = {};
+
     todoObj.title = todoDiv.children[0].innerText;
     todoObj.completed =
       todoDiv.children[0].style.textDecoration === "line-through";
@@ -75,20 +84,20 @@ function saveTodo() {
     //your code here
   }
 
-  console.log(data);
-
   const dataStr = JSON.stringify(data);
   localStorage.setItem("todoListData", dataStr);
   //your code here
 }
 
 function loadTodo() {
+  check = false;
+
   const dataStr = localStorage.getItem("todoListData");
   const data = JSON.parse(dataStr);
 
   for (const todoObj of data) {
     addTodo(todoObj.title, todoObj.completed);
   }
+  check = true;
 }
-
 loadTodo();
